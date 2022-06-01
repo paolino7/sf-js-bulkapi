@@ -43,12 +43,12 @@ const getBulkQueryResult = async function saveBulkQueryResultJob(
   }
 };
 
-async function getData(bulkapi2, jobId, tempFolderName, sfLocator) {
+async function getData(bulkapi2, jobId, tempFolderName, stSfLocator) {
   let response;
   let fileName;
-  if (sfLocator) {
-    fileName = path.join(tempFolderName, `result_${sfLocator}.csv`);
-    response = await bulkapi2.getBulkQueryResults(jobId, sfLocator);
+  if (stSfLocator) {
+    fileName = path.join(tempFolderName, `result_${stSfLocator}.csv`);
+    response = await bulkapi2.getBulkQueryResults(jobId, stSfLocator);
   } else {
     fileName = path.join(tempFolderName, `result.csv`);
     response = await bulkapi2.getBulkQueryResults(jobId);
@@ -61,9 +61,10 @@ async function getData(bulkapi2, jobId, tempFolderName, sfLocator) {
     );
     fs.writeFileSync(fileName, response.data);
     if (sfLocator === null || sfLocator === "null") {
+      console.log(`Retrieve Done!`);
       return Promise.resolve();
     } else {
-      return getData(bulkapi2, jobId, sfLocator);
+      return getData(bulkapi2, jobId, tempFolderName, sfLocator);
     }
   }
 }
